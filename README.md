@@ -30,7 +30,7 @@ This project simulates and controls a double inverted pendulum using **PyBullet*
 
 ```bash
 cd ~/ros2_ws/src
-git clone https://github.com/yourlab/double_pendulum_ros2.git
+git clone https://github.com/SAMUEL-CWC/double_inverted_pendulum.git
 cd ..
 rosdep install --from-paths src --ignore-src -r -y
 colcon build
