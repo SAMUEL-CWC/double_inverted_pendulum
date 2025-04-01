@@ -43,6 +43,7 @@ source install/setup.bash
 1. Run the PyBullet Simulator
 ```bash
 ros2 run dip_sim sim_node
+```
 This launches the double pendulum simulation and publishes joint states.
 
 ---
@@ -50,5 +51,66 @@ This launches the double pendulum simulation and publishes joint states.
 2. Run the LQR Controller
 ```bash
 ros2 run dip_control lqr_controller
-
+```
 Subscribes to joint states, applies u = -Kx control law, and publishes motor commands.
+
+---
+
+3. Run the RL Controller (Optional / Coming Soon)
+```bash
+ros2 run dip_control rl_controller
+```
+Loads a trained RL policy and interacts with the simulation or real hardware.
+
+---
+
+4. Run the vision node
+```bash
+ros2 run dip_vision vision_node
+```
+Captures webcam input, tracks link markers, and estimates angle and angular velocity of the second link.
+
+---
+
+📂 Workspace Structure
+```bash
+ros2_ws/
+├── src/
+│   ├── dip_sim/         # Simulation node
+│   ├── dip_control/     # LQR and RL controllers
+│   ├── dip_vision/      # Vision processing node
+│   └── dip_msgs/        # (Optional) Custom ROS 2 messages
+├── build/
+├── install/
+└── log/
+```
+
+---
+
+📈 Project Goals
+Compare LQR vs RL control strategies under noisy sensor feedback
+
+Test robustness of vision-based state estimation
+
+Transition simulation to real-world control with a Jetson Orin Nano
+
+Build a reproducible, shareable ROS 2 control stack for educational and research use
+
+---
+
+👨‍🔬 Maintainer Info
+Maintainer: Samuel Chien
+
+Lab: Mechatronics and Controls Laboratory, UCLA
+
+Email: samuelbruin0618@g.ucla.edu
+
+📜 License
+This project is licensed under the BSD 3-Clause License.
+See the LICENSE file for more details.
+```yaml
+
+---
+
+Would you like me to fill in your actual name, lab, or email? Or generate this as a file you can drop right into your repo?
+```
