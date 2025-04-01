@@ -89,22 +89,22 @@ ros2_ws/
 ---
 
 ## 📈 Project Goals
-Compare LQR vs RL control strategies under noisy sensor feedback
+- Compare LQR vs RL control strategies under noisy sensor feedback
 
-Test robustness of vision-based state estimation
+- Test robustness of vision-based state estimation
 
-Transition simulation to real-world control with a Jetson Orin Nano
+- Transition simulation to real-world control with a Jetson Orin Nano
 
-Build a reproducible, shareable ROS 2 control stack for educational and research use
+- Build a reproducible, shareable ROS 2 control stack for educational and research use
 
 ---
 
 ## 👨‍🔬 Maintainer Info
-Maintainer: Samuel Chien
+- Maintainer: Samuel Chien
 
-Lab: Mechatronics and Controls Laboratory, UCLA
+- Lab: Mechatronics and Controls Laboratory, UCLA
 
-Email: samuelbruin0618@g.ucla.edu
+- Email: samuelbruin0618@g.ucla.edu
 
 ## 📜 License
 This project is licensed under the BSD 3-Clause License.
