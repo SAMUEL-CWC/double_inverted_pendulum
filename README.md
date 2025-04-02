@@ -109,9 +109,3 @@ ros2_ws/
 ## 📜 License
 This project is licensed under the BSD 3-Clause License.
 See the LICENSE file for more details.
-```yaml
-
----
-
-Would you like me to fill in your actual name, lab, or email? Or generate this as a file you can drop right into your repo?
-```
