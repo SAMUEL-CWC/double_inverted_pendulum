@@ -1,0 +1,16 @@
+# dip_control/config/lqr_params.yaml
+
+# Parameters for LQR controller
+lqr_controller:
+  ros__parameters:
+    m: 0.04556
+    g: 9.81
+    a: 0.0508
+    b: 0.01
+    # Weighting matrices for the LQR controller
+    Q: [10, 0, 0, 0,
+      0, 100, 0, 0,
+      0, 0, 10, 0,
+      0, 0, 0, 1] # State weighting matrix
+
+    R: [1]  # Input weighting matrix
