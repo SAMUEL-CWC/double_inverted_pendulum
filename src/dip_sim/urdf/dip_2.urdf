@@ -1,0 +1,79 @@
+<?xml version="1.0" ?>
+<robot name="double_pendulum_2">
+
+  <!-- Link 1 -->
+  <link name="link1">
+    <inertial>
+      <mass value="0.04556" />
+      <origin xyz="0 0.038135 0" />
+      <inertia ixx="2.12e-5" iyy="2.03e-5" izz="1.79e-6" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <cylinder radius="0.00645" length="0.07627" />
+      </geometry>
+      <origin xyz="0 0.038135 0" rpy="1.5708 0 0"/>
+      <material name="blue">
+        <color rgba="0 0.502 0.502 1"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="0.00645" length="0.07627" />
+      </geometry>
+      <origin xyz="0 0.038135 0" rpy="1.5708 0 0"/>
+    </collision>
+  </link>
+
+  <!-- Link 2 -->
+  <link name="link2">
+    <inertial>
+      <mass value="0.04556" />
+      <origin xyz="0 0.038135 0" />
+      <inertia ixx="2.12e-5" iyy="2.03e-5" izz="1.79e-6" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <cylinder radius="0.00645" length="0.07627" />
+      </geometry>
+      <origin xyz="0 0.038135 0" rpy="1.5708 0 0"/>
+      <material name="red">
+        <color rgba="1 0 0 1"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="0.00645" length="0.07627" />
+      </geometry>
+      <origin xyz="0 0.038135 0" rpy="1.5708 0 0"/>
+    </collision>
+  </link>
+
+  <!-- Joint 1 (Base to Link 1) -->
+  <joint name="joint1" type="revolute">
+    <parent link="base_link" />
+    <child link="link1" />
+    <origin xyz="0 0 0" rpy="0 0 0" />
+    <axis xyz="0 0 1" />
+    <limit effort="10" velocity="5"/>
+  </joint>
+
+  <!-- Joint 2 (Link 1 to Link 2) -->
+  <joint name="joint2" type="revolute">
+    <parent link="link1" />
+    <child link="link2" />
+    <origin xyz="0 0.0508 0.0129" rpy="0 0 0" />
+    <axis xyz="0 0 1" />
+    <limit effort="1" velocity="5"/>
+  </joint>
+
+  <!-- Virtual base link -->
+  <link name="base_link">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="1e-6"/> <!-- very small mass -->
+      <inertia ixx="1e-6" iyy="1e-6" izz="1e-6" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+
+</robot>

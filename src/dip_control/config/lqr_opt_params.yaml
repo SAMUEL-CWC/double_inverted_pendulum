@@ -1,0 +1,32 @@
+# dip_control/config/lqr_opt_params.yaml
+
+/**:
+  ros__parameters:
+    use_sim_time: True # apply to all nodes
+
+# Parameters for simulator
+dip_simulator_opt:
+  ros__parameters:
+    physics_dt: 0.001
+    state_pub_hz: 250.0
+    gui: True
+
+# Parameters for LQR controller
+lqr_controller_opt:
+  ros__parameters:
+    # Plant
+    m: 0.04556
+    g: 9.81
+    a: 0.0508
+    b: 0.01
+
+    # Weighting matrices for the LQR controller
+    Q: [10, 0, 0, 0,
+      0, 100, 0, 0,
+      0, 0, 10, 0,
+      0, 0, 0, 1] # State weighting matrix
+    R: [1]  # Input weighting matrix
+
+    # Control limits
+    torque_limit: 2000.0
+    torque_slew: 1e9

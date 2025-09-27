@@ -135,7 +135,6 @@ class LQRController(Node):
         ).reshape(1, 1)
 
         # Solve Continuous Algebraic Riccati Equation and get K
-        from scipy.linalg import solve_continuous_are
 
         K, S, E = control.lqr(A, B, Q, R)
 
@@ -156,7 +155,7 @@ class LQRController(Node):
 
     def control_callback(self):
         u = -self.K @ self.state
-        self.torque_pub.publish(Float64(data=float(u)))
+        self.torque_pub.publish(Float64(data=float(u[0])))
         self.get_logger().info(f"u = {u[0]:.3f}")
 
 

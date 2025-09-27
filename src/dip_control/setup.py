@@ -28,6 +28,7 @@ setup(
     entry_points={
         "console_scripts": [
             "lqr_node = dip_control.lqr_node:main",
+            "lqr_opt = dip_control.lqr_opt:main",
             "supervisor_node = dip_control.supervisor_node:main",
         ],
     },

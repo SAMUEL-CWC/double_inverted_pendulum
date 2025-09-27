@@ -28,6 +28,7 @@ class DipSimulator(Node):
         self.subscription = self.create_subscription(
             Float64, "torque_cmd", self.torque_callback, 10
         )
+        # Initialize torque variable
         self.torque = 0.0
 
         # Start PyBullet simulation
@@ -79,9 +80,7 @@ class DipSimulator(Node):
         # Load plane and URDF
         p.loadURDF("plane.urdf")
         urdf_path = os.path.abspath(
-            os.path.join(
-                os.path.dirname(__file__), "..", "urdf", "double_pendulum.urdf"
-            )
+            os.path.join(os.path.dirname(__file__), "..", "urdf", "dip_2.urdf")
         )
 
         self.robot = p.loadURDF(urdf_path, [0, 0, 0.2], useFixedBase=True)
@@ -117,6 +116,7 @@ class DipSimulator(Node):
             controlMode=p.TORQUE_CONTROL,
             force=self.torque,
         )
+
         self.get_logger().info(f"Applied torque: {self.torque}")
 
         # Step simulation
