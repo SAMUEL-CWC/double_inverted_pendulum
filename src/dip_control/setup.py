@@ -24,7 +24,6 @@ setup(
     maintainer_email="samuelbruin0618@g.ucla.edu",
     description="TODO: Package description",
     license="BSD-3-Clause",
-    tests_require=["pytest"],
     entry_points={
         "console_scripts": [
             "lqr_node = dip_control.lqr_node:main",

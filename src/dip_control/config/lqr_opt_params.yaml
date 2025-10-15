@@ -11,6 +11,10 @@ dip_simulator_opt:
     state_pub_hz: 250.0
     gui: True
 
+    angle_mode: "absolute"  # "absolute" or "relative"
+    theta1_offset: 0.0  # radians
+    theta2_offset: 0.0  # radians
+
 # Parameters for LQR controller
 lqr_controller_opt:
   ros__parameters:

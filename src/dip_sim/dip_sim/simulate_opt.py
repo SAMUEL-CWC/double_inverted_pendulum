@@ -8,11 +8,13 @@ from rclpy.qos import QoSProfile, ReliabilityPolicy, HistoryPolicy, DurabilityPo
 from std_msgs.msg import Float64
 from sensor_msgs.msg import JointState
 from dip_interfaces.msg import DipState
+from rcl_interfaces.msg import SetParametersResult
 from rosgraph_msgs.msg import Clock
 
 import pybullet as p
 import pybullet_data
 import math, os, time, threading
+from ament_index_python.packages import get_package_share_directory
 
 
 class DipSimulator(Node):
@@ -23,10 +25,19 @@ class DipSimulator(Node):
         self.declare_parameter("physics_dt", 0.001)  # 1 kHz physics
         self.declare_parameter("state_pub_hz", 250.0)  # decimate to 250 Hz ROS I/O
         self.declare_parameter("gui", True)
+        self.declare_parameter("angle_mode", "absolute")  # "absolute" or "relative"
+        self.declare_parameter("theta1_offset", 0.0)  # radians
+        self.declare_parameter("theta2_offset", 0.0)  # radians
 
         self.physics_dt = self.get_parameter("physics_dt").value
         self.state_pub_hz = self.get_parameter("state_pub_hz").value
         self.gui = self.get_parameter("gui").value
+
+        self.angle_mode = self.get_parameter("angle_mode").value
+        self.theta1_offset = self.get_parameter("theta1_offset").value
+        self.theta2_offset = self.get_parameter("theta2_offset").value
+
+        self.add_on_set_parameters_callback(self._on_params)
 
         # --- QoS (typical in robotics) ---
         # State out: best-effort, small history (sensor-like)
@@ -87,9 +98,12 @@ class DipSimulator(Node):
         p.setTimeStep(self.physics_dt)
         p.loadURDF("plane.urdf")
 
-        urdf_path = os.path.abspath(
-            os.path.join(os.path.dirname(__file__), "..", "urdf", "dip_2.urdf")
-        )
+        # Load dip URDF
+        pkg_share = get_package_share_directory("dip_sim")
+        urdf_path = os.path.join(pkg_share, "urdf", "dip_2.urdf")
+        if not os.path.exists(urdf_path):
+            self.get_logger().error(f"URDF not found: {urdf_path}")
+            raise FileNotFoundError(urdf_path)
         self.robot = p.loadURDF(urdf_path, [0, 0, 0.2], useFixedBase=True)
 
         self.joint1_index = 0
@@ -111,11 +125,32 @@ class DipSimulator(Node):
         with self._torque_lock:
             self._torque = float(msg.data)
 
+    def _on_params(self, params):
+        updated = []
+        for p in params:
+            if p.name == "angle_mode" and p.type == p.Type.STRING:
+                self.angle_mode = p.value
+                updated.append("angle_mode")
+            elif p.name == "theta1_offset" and p.type in (
+                p.Type.DOUBLE,
+                p.Type.INTEGER,
+            ):
+                self.theta1_offset = float(p.value)
+                updated.append("theta1_offset")
+            elif p.name == "theta2_offset" and p.type in (
+                p.Type.DOUBLE,
+                p.Type.INTEGER,
+            ):
+                self.theta2_offset = float(p.value)
+                updated.append("theta2_offset")
+        if updated:
+            self.get_logger().info(f"Updated params: {', '.join(updated)}")
+        return SetParametersResult(successful=True)
+
     # ---------- Helpers ----------
     @staticmethod
-    def _wrap_pi(rad):
-        a = rad + math.pi
-        return (a + math.pi) % (2 * math.pi) - math.pi
+    def _wrap_pi(x):
+        return (x + math.pi) % (2 * math.pi) - math.pi
 
     # ---------- Main physics loop ----------
     def _physics_loop(self):
@@ -147,22 +182,30 @@ class DipSimulator(Node):
             if self._time_since_pub >= self._publish_interval:
                 self._time_since_pub = 0.0
 
-                theta1, theta1_dot, _, _ = p.getJointState(
+                theta1_raw, theta1_dot_raw, _, _ = p.getJointState(
                     self.robot, self.joint1_index
                 )
-                theta2, theta2_dot, _, _ = p.getJointState(
+                theta2_raw, theta2_dot_raw, _, _ = p.getJointState(
                     self.robot, self.joint2_index
                 )
 
-                theta1 = self._wrap_pi(theta1)
-                theta2 = self._wrap_pi(theta2)
+                if self.angle_mode == "absolute":
+                    theta1 = self._wrap_pi(theta1_raw - self.theta1_offset)
+                    theta2 = self._wrap_pi(theta1_raw + theta2_raw - self.theta2_offset)
+                    theta1_dot = theta1_dot_raw
+                    theta2_dot = theta1_dot_raw + theta2_dot_raw
+                else:  # relative
+                    theta1 = self._wrap_pi(theta1_raw - self.theta1_offset)
+                    theta2 = self._wrap_pi(theta2_raw - self.theta2_offset)
+                    theta1_dot = theta1_dot_raw
+                    theta2_dot = theta2_dot_raw
 
                 # JointState (useful for RViz, plotting)
                 js = JointState()
                 js.header.stamp = self.get_clock().now().to_msg()
                 js.name = ["joint1", "joint2"]
-                js.position = [theta1, theta2]
-                js.velocity = [theta1_dot, theta2_dot]
+                js.position = [theta1_raw, theta2_raw]
+                js.velocity = [theta1_dot_raw, theta2_dot_raw]
                 js.effort = [torque, 0.0]
                 self.joint_state_pub.publish(js)
 
