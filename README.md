@@ -1,4 +1,4 @@
-# Double Inverted Pendulum Control (ROS 2 Jazzy)
+# Double Inverted Pendulum Control (ROS 2 Humble)
 
 This project simulates and controls a double inverted pendulum using **PyBullet**, **ROS 2 Humble**, and both classical (LQR) and modern (RL) control methods. It includes modules for simulation, control, vision-based state estimation, and system integration with Jetson hardware.
 
