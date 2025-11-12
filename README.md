@@ -30,7 +30,7 @@ This project simulates and controls a double inverted pendulum using **PyBullet*
 ## 🛠️ Installation
 
 ```bash
-cd ~/ros2_ws/src
+cd ~/ros2_ws
 git clone https://github.com/SAMUEL-CWC/double_inverted_pendulum.git
 cd ..
 rosdep install --from-paths src --ignore-src -r -y
@@ -43,7 +43,7 @@ source install/setup.bash
 ## 🚀 Running the Simulation
 ### 1. Run the PyBullet Simulator
 ```bash
-ros2 run dip_sim simulate
+ros2 run dip_sim simulate_opt
 ```
 This launches the double pendulum simulation and publishes joint states.
 
@@ -51,21 +51,23 @@ This launches the double pendulum simulation and publishes joint states.
 
 ### 2. Run the LQR Controller
 ```bash
-ros2 run dip_control lqr_node
+ros2 run dip_control lqr_opt
 ```
 Subscribes to joint states, applies u = -Kx control law, and publishes motor commands.
 
 ---
 
-### 3. Run the RL Controller (Optional / Coming Soon)
+### 3. Launch the Simulation with Controller
 ```bash
-ros2 run dip_control rl_controller
+ros2 launch dip_control launch_opt.py
 ```
 Loads a trained RL policy and interacts with the simulation or real hardware.
 
+> What "opt" version do: Reduce latency & jitter, QoS setup
+
 ---
 
-### 4. Run the vision node
+### 4. Run the vision node (Coming Soon)
 ```bash
 ros2 run dip_vision vision_node
 ```
@@ -75,7 +77,7 @@ Captures webcam input, tracks link markers, and estimates angle and angular velo
 
 ## 📂 Workspace Structure
 ```bash
-dip_ros2_ws/
+dip_ws/
 ├── src/
 │   ├── dip_sim/         # Simulation node
 │   ├── dip_control/     # LQR and RL controllers
